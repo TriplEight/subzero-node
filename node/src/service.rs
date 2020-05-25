@@ -4,7 +4,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use sc_client_api::ExecutorProvider;
 use sc_consensus::LongestChain;
-use node_template_runtime::{self, opaque::Block, RuntimeApi};
+use subzero_runtime::{self, opaque::Block, RuntimeApi};
 use sc_service::{error::{Error as ServiceError}, AbstractService, Configuration, ServiceBuilder};
 use sp_inherents::InherentDataProviders;
 use sc_executor::native_executor_instance;
@@ -17,8 +17,8 @@ use sc_finality_grandpa::{
 // Our native executor instance.
 native_executor_instance!(
 	pub Executor,
-	node_template_runtime::api::dispatch,
-	node_template_runtime::native_version,
+	subzero_runtime::api::dispatch,
+	subzero_runtime::native_version,
 );
 
 /// Starts a `ServiceBuilder` for a full service.
@@ -29,12 +29,13 @@ macro_rules! new_full_start {
 	($config:expr) => {{
 		use std::sync::Arc;
 		use sp_consensus_aura::sr25519::AuthorityPair as AuraPair;
+        use jsonrpc_core::IoHandler;
 
 		let mut import_setup = None;
 		let inherent_data_providers = sp_inherents::InherentDataProviders::new();
 
 		let builder = sc_service::ServiceBuilder::new_full::<
-			node_template_runtime::opaque::Block, node_template_runtime::RuntimeApi, crate::service::Executor
+			subzero_runtime::opaque::Block, subzero_runtime::RuntimeApi, crate::service::Executor
 		>($config)?
 			.with_select_chain(|_config, backend| {
 				Ok(sc_consensus::LongestChain::new(backend.clone()))
@@ -78,7 +79,15 @@ macro_rules! new_full_start {
 				import_setup = Some((grandpa_block_import, grandpa_link));
 
 				Ok(import_queue)
-			})?;
+			})?
+            .with_rpc_extensions(|builder| -> Result<IoHandler<sc_rpc::Metadata>, _> {
+                let handler = pallet_contracts_rpc::Contracts::new(builder.client().clone());
+                let delegate = pallet_contracts_rpc::ContractsApi::to_delegate(handler);
+
+                let mut io = IoHandler::default();
+                io.extend_with(delegate);
+                Ok(io)
+            })?;
 
 		(builder, import_setup, inherent_data_providers)
 	}}

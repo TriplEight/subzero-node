@@ -1,3 +1,22 @@
+[dependencies.contracts]
+git = 'https://github.com/paritytech/substrate.git'
+default-features = false
+package = 'pallet-contracts'
+tag = 'v2.0.0-alpha.8'
+
+[dependencies.contracts-primitives]
+git = 'https://github.com/paritytech/substrate.git'
+default-features = false
+package = 'pallet-contracts-primitives'
+tag = 'v2.0.0-alpha.8'
+
+[dependencies.contracts-rpc-runtime-api]
+git = 'https://github.com/paritytech/substrate.git'
+default-features = false
+package = 'pallet-contracts-rpc-runtime-api'
+version = '0.8.0-alpha.8'
+tag = 'v2.0.0-alpha.8'
+
 [dependencies.aura]
 default-features = false
 git = 'https://github.com/paritytech/substrate.git'
@@ -162,12 +181,12 @@ tag = 'v2.0.0-alpha.8'
 version = '1.0.5'
 
 [package]
-authors = ['Substrate DevHub <https://github.com/substrate-developer-hub>']
+authors = ['subzero team, substrate DevHub']
 edition = '2018'
-homepage = 'https://substrate.io'
+homepage = 'https://zero.io'
 license = 'Unlicense'
-name = 'node-template-runtime'
-repository = 'https://github.com/substrate-developer-hub/substrate-node-template/'
+name = 'subzero-runtime'
+repository = 'https://github.com/playzero/subzero-template/'
 version = '2.0.0-alpha.8'
 
 [package.metadata.docs.rs]
@@ -179,6 +198,9 @@ std = [
     'aura/std',
     'balances/std',
     'codec/std',
+    'contracts/std',
+    'contracts-primitives/std',
+    'contracts-rpc-runtime-api/std',
     'frame-executive/std',
     'frame-support/std',
     'grandpa/std',

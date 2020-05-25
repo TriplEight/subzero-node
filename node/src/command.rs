@@ -22,7 +22,7 @@ use sc_cli::SubstrateCli;
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> &'static str {
-		"Substrate Node"
+		"SUBZERO Node"
 	}
 
 	fn impl_version() -> &'static str {
@@ -38,7 +38,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn support_url() -> &'static str {
-		"support.anonymous.an"
+		"support.zero.io"
 	}
 
 	fn copyright_start_year() -> i32 {
@@ -74,7 +74,7 @@ pub fn run() -> sc_cli::Result<()> {
 			runner.run_node(
 				service::new_light,
 				service::new_full,
-				node_template_runtime::VERSION
+				subzero_runtime::VERSION
 			)
 		}
 	}

@@ -25,6 +25,9 @@ use sp_version::RuntimeVersion;
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 
+// contracts pallet rpc
+use contracts_rpc_runtime_api::ContractExecResult;
+
 // A few exports that help ease life for downstream crates.
 #[cfg(any(feature = "std", test))]
 pub use sp_runtime::BuildStorage;
@@ -39,6 +42,9 @@ pub use frame_support::{
 		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
 	},
 };
+
+/// Importing the contracts Schedule type.
+pub use contracts::Schedule as ContractsSchedule;
 
 /// Importing a template pallet
 pub use template;
@@ -112,6 +118,11 @@ pub const SLOT_DURATION: u64 = MILLISECS_PER_BLOCK;
 pub const MINUTES: BlockNumber = 60_000 / (MILLISECS_PER_BLOCK as BlockNumber);
 pub const HOURS: BlockNumber = MINUTES * 60;
 pub const DAYS: BlockNumber = HOURS * 24;
+
+// Contracts price units.
+pub const MILLICENTS: Balance = 1_000_000_000;
+pub const CENTS: Balance = 1_000 * MILLICENTS;
+pub const DOLLARS: Balance = 100 * CENTS;
 
 /// The version information used to identify this runtime when compiled natively.
 #[cfg(feature = "std")]
@@ -215,6 +226,31 @@ impl timestamp::Trait for Runtime {
 }
 
 parameter_types! {
+	pub const TombstoneDeposit: Balance = 1 * DOLLARS;
+	pub const RentByteFee: Balance = 1 * DOLLARS;
+	pub const RentDepositOffset: Balance = 1000 * DOLLARS;
+	pub const SurchargeReward: Balance = 150 * DOLLARS;
+}
+
+impl contracts::Trait for Runtime {
+	type Time = Timestamp;
+	type Randomness = RandomnessCollectiveFlip;
+	type Call = Call;
+	type Event = Event;
+	type DetermineContractAddress = contracts::SimpleAddressDeterminer<Runtime>;
+	type TrieIdGenerator = contracts::TrieIdFromParentCounter<Runtime>;
+	type RentPayment = ();
+	type SignedClaimHandicap = contracts::DefaultSignedClaimHandicap;
+	type TombstoneDeposit = TombstoneDeposit;
+	type StorageSizeOffset = contracts::DefaultStorageSizeOffset;
+	type RentByteFee = RentByteFee;
+	type RentDepositOffset = RentDepositOffset;
+	type SurchargeReward = SurchargeReward;
+	type MaxDepth = contracts::DefaultMaxDepth;
+	type MaxValueSize = contracts::DefaultMaxValueSize;
+}
+
+parameter_types! {
 	pub const ExistentialDeposit: u128 = 500;
 }
 
@@ -266,6 +302,8 @@ construct_runtime!(
 		Sudo: sudo::{Module, Call, Config<T>, Storage, Event<T>},
 		// Used for the module template in `./template.rs`
 		TemplateModule: template::{Module, Call, Storage, Event<T>},
+		//
+		Contracts: contracts::{Module, Call, Config, Storage, Event<T>},
 	}
 );
 
@@ -404,4 +442,39 @@ impl_runtime_apis! {
 			None
 		}
 	}
+
+	impl contracts_rpc_runtime_api::ContractsApi<Block, AccountId, Balance, BlockNumber>
+			for Runtime
+		{
+			fn call(
+				origin: AccountId,
+				dest: AccountId,
+				value: Balance,
+				gas_limit: u64,
+				input_data: Vec<u8>,
+			) -> ContractExecResult {
+				let exec_result =
+					Contracts::bare_call(origin, dest.into(), value, gas_limit, input_data);
+				match exec_result {
+					Ok(v) => ContractExecResult::Success {
+						status: v.status,
+						data: v.data,
+					},
+					Err(_) => ContractExecResult::Error,
+				}
+			}
+
+			fn get_storage(
+				address: AccountId,
+				key: [u8; 32],
+			) -> contracts_primitives::GetStorageResult {
+				Contracts::get_storage(address, key)
+			}
+
+			fn rent_projection(
+				address: AccountId,
+			) -> contracts_primitives::RentProjectionResult<BlockNumber> {
+				Contracts::rent_projection(address)
+			}
+		}
 }
