@@ -48,7 +48,7 @@ RUN mv /usr/share/ca* /tmp && \
 	rm -rf /usr/bin /usr/sbin
 
 USER subzero
-EXPOSE 30333 9933 9944
+EXPOSE 30333 9933 9944 9615
 VOLUME ["/data"]
 
 ENTRYPOINT ["/usr/local/bin/subzero"]
