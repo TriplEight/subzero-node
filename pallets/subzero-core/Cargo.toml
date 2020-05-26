@@ -1,12 +1,12 @@
 [package]
-authors = ['Substrate DevHub <https://github.com/substrate-developer-hub>']
-description = 'Substrate FRAME pallet template'
+authors = ['marco@one.io']
+description = 'subzero core frame pallet'
 edition = '2018'
-homepage = 'https://substrate.io'
+homepage = 'https://zero.io'
 license = 'Unlicense'
-name = 'pallet-template'
-repository = 'https://github.com/paritytech/substrate/'
-version = '2.0.0-alpha.8'
+name = 'subzero-core'
+repository = 'https://github.com/playzero/suzbero-core'
+version = '0.0.1'
 
 [package.metadata.docs.rs]
 targets = ['x86_64-unknown-linux-gnu']
