@@ -768,6 +768,52 @@ dependencies = [
 ]
 
 [[package]]
+name = "evm"
+version = "0.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "23a5c0ebf219b2b878bde1838282e0bb69828338df37fd136f1e93182ae35a59"
+dependencies = [
+ "evm-core",
+ "evm-gasometer",
+ "evm-runtime",
+ "primitive-types",
+ "rlp",
+ "serde",
+ "sha3",
+]
+
+[[package]]
+name = "evm-core"
+version = "0.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d944a07232006a3435df8aa014fd364ed04cb28d731782339e9c56436594f2d4"
+dependencies = [
+ "primitive-types",
+]
+
+[[package]]
+name = "evm-gasometer"
+version = "0.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a0d986953234d3786d0ca1beaaabab6a581d2128f8ec36c8c57e9c45e3d2b32"
+dependencies = [
+ "evm-core",
+ "evm-runtime",
+ "primitive-types",
+]
+
+[[package]]
+name = "evm-runtime"
+version = "0.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1833c22f9518007d3cc28e14ff586263543516a1c7a147b260c603e4deb95403"
+dependencies = [
+ "evm-core",
+ "primitive-types",
+ "sha3",
+]
+
+[[package]]
 name = "exit-future"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1562,6 +1608,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1be51a921b067b0eaca2fad532d9400041561aa922221cc65f95a85641c6bf53"
 dependencies = [
  "parity-scale-codec",
+]
+
+[[package]]
+name = "impl-rlp"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8f7a72f11830b52333f36e3b09a288333888bf54380fd0ac0790a3c31ab0f3c5"
+dependencies = [
+ "rlp",
 ]
 
 [[package]]
@@ -2755,6 +2810,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-evm"
+version = "2.0.0-alpha.8"
+source = "git+https://github.com/paritytech/substrate.git?tag=v2.0.0-alpha.8#7e9a2ae78d27cc56e053fbec3b34a1a258b89561"
+dependencies = [
+ "evm",
+ "frame-support",
+ "frame-system",
+ "pallet-balances",
+ "pallet-timestamp",
+ "parity-scale-codec",
+ "primitive-types",
+ "rlp",
+ "serde",
+ "sha3",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-finality-tracker"
 version = "2.0.0-alpha.8"
 source = "git+https://github.com/paritytech/substrate.git?tag=v2.0.0-alpha.8#7e9a2ae78d27cc56e053fbec3b34a1a258b89561"
@@ -3175,6 +3251,7 @@ checksum = "c55c21c64d0eaa4d7ed885d959ef2d62d9e488c27c0e02d9aa5ce6c877b7d5f8"
 dependencies = [
  "fixed-hash",
  "impl-codec",
+ "impl-rlp",
  "impl-serde 0.3.1",
  "uint",
 ]
@@ -3675,6 +3752,15 @@ name = "rle-decode-fast"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cabe4fa914dec5870285fa7f71f602645da47c486e68486d2b4ceb4a343e90ac"
+
+[[package]]
+name = "rlp"
+version = "0.4.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4a7d3f9bed94764eac15b8f14af59fac420c236adaff743b7bcc88e265cb4345"
+dependencies = [
+ "rustc-hex",
+]
 
 [[package]]
 name = "rocksdb"
@@ -5477,6 +5563,7 @@ dependencies = [
  "pallet-contracts",
  "pallet-contracts-primitives",
  "pallet-contracts-rpc-runtime-api",
+ "pallet-evm",
  "pallet-grandpa",
  "pallet-randomness-collective-flip",
  "pallet-sudo",

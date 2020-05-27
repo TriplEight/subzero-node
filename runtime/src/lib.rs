@@ -25,6 +25,9 @@ use sp_version::RuntimeVersion;
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 
+// evm
+// use evm::{FeeCalculator, HashTruncateConvertAccountId};
+
 // contracts pallet rpc
 use contracts_rpc_runtime_api::ContractExecResult;
 
@@ -42,6 +45,9 @@ pub use frame_support::{
 		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
 	},
 };
+
+/// EVM pallet
+// pub use evm::Account as EVMAccount;
 
 /// Importing the contracts Schedule type.
 pub use contracts::Schedule as ContractsSchedule;
@@ -74,6 +80,9 @@ pub type Hash = sp_core::H256;
 
 /// Digest item type.
 pub type DigestItem = generic::DigestItem<Hash>;
+
+// EVM structs
+// pub struct FixedGasPrice;
 
 /// Opaque types. These are used by the CLI to instantiate machinery that don't need to know
 /// the specifics of the runtime. They can then be made to be agnostic over specific formats
@@ -281,6 +290,24 @@ impl sudo::Trait for Runtime {
 	type Call = Call;
 }
 
+/// EVM
+// impl FeeCalculator for FixedGasPrice {
+// 	fn min_gas_price() -> U256 {
+// 			// Gas price is always one token per gas.
+// 			1.into()
+// 	}
+// }
+
+// impl evm::Trait for Runtime {
+// 	type FeeCalculator = FixedGasPrice;
+// 	type ConvertAccountId = HashTruncateConvertAccountId<Blake2Hasher>;
+// 	type Currency = Balances;
+// 	type Event = Event;
+// 	type Precompiles = ();	// We can use () here because paint_evm provides an
+// 							// `impl Precompiles for ()``
+// 							// block that always returns none (line 75)
+// }
+
 /// Used for the module template in `./template.rs`
 impl subzero_core::Trait for Runtime {
 	type Event = Event;
@@ -302,8 +329,11 @@ construct_runtime!(
 		Sudo: sudo::{Module, Call, Config<T>, Storage, Event<T>},
 		// Used for the module template in `./template.rs`
 		SubzeroCore: subzero_core::{Module, Call, Storage, Event<T>},
-		//
+		// Contracts
 		Contracts: contracts::{Module, Call, Config, Storage, Event<T>},
+		// EVM
+		// EVM: evm::{Module, Config, Call, Storage, Event},
+
 	}
 );
 

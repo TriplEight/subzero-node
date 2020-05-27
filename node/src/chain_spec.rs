@@ -8,7 +8,10 @@ use sp_finality_grandpa::AuthorityId as GrandpaId;
 use sp_runtime::traits::{Verify, IdentifyAccount};
 use sc_service::ChainType;
 
-// contracts pallet
+// evm
+use evm::{ConvertAccountId, HashTruncateConvertAccountId};
+
+// contracts
 use subzero_runtime::{ContractsConfig, ContractsSchedule};
 
 // Note this is the URL for the telemetry server
@@ -128,6 +131,14 @@ fn testnet_genesis(initial_authorities: Vec<(AuraId, GrandpaId)>,
 					enable_println,
 					..Default::default()
 			},
+		}),
+		evm: Some(EVMConfig {
+			accounts: vec![(
+				alice_evm_account_id,
+				EVMAccount {
+					nonce: 0.into(),
+					balance: U256::MAX,
+				})],
 		}),
 
 	}
